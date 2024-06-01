@@ -6,7 +6,12 @@ import kotlin.coroutines.*
 
 /**
  * Defines start options for coroutines builders.
+ *
  * It is used in `start` parameter of [launch][CoroutineScope.launch], [async][CoroutineScope.async], and other coroutine builder functions.
+ *
+ * This parameter only affects how the coroutine behaves until it reaches the first suspension point.
+ * After that, cancellability and dispatching depend on the implementation details of the invoked suspending functions.
+ * Use [suspendCancellableCoroutine] to implement custom cancellable suspending functions.
  *
  * The summary of coroutine start options is:
  * - [DEFAULT] -- immediately schedules coroutine for execution according to its context;
@@ -27,9 +32,6 @@ public enum class CoroutineStart {
      *
      * If coroutine [Job] is cancelled before it even had a chance to start executing, then it will not start its
      * execution at all, but will complete with an exception.
-     *
-     * Cancellability of a coroutine at suspension points depends on the particular implementation details of
-     * suspending functions. Use [suspendCancellableCoroutine] to implement cancellable suspending functions.
      */
     DEFAULT,
 
@@ -47,9 +49,6 @@ public enum class CoroutineStart {
     /**
      * Atomically (i.e., in a non-cancellable way) schedules the coroutine for execution according to its context.
      * This is similar to [DEFAULT], but the coroutine cannot be cancelled before it starts executing.
-     *
-     * Cancellability of coroutine at suspension points depends on the particular implementation details of
-     * suspending functions as in [DEFAULT].
      */
     @ExperimentalCoroutinesApi // Since 1.0.0, no ETA on stability
     ATOMIC,
@@ -61,9 +60,6 @@ public enum class CoroutineStart {
      *
      * This is similar to [ATOMIC] in the sense that coroutine starts executing even if it was already cancelled,
      * but the difference is that it starts executing in the same thread.
-     *
-     * Cancellability of coroutine at suspension points depends on the particular implementation details of
-     * suspending functions as in [DEFAULT].
      *
      * ### Unconfined event loop
      *
